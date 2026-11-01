@@ -24,4 +24,7 @@ py-modules = ["main"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["integrations*", "configs*", "core*", "schemas*", "agents*", "packages*"]
+include = ["integrations*", "configs*", "core*", "schemas*", "agents*", "packages*", "memory*"]
+
+[tool.setuptools.package-data]
+"memory.episodic" = ["prompts/*.md"]

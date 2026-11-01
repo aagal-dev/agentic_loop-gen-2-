@@ -4,6 +4,8 @@ from agents.tool_agent import invoke_tool_agent
 from configs.mcp_settings import mcp_settings
 from core.chat_history import ChatHistoryManager
 from core.runtime_state import RuntimeStateManager
+from memory.episodic_memory import EpisodicConsolidationResult, EpisodicMemory
+from memory.episodic_memory_configs import configure_episodic_memory
 from packages.MCP import MCPClient
 from packages.MCP.client.result import resource_agent_view
 from schemas.agents.tool_agent import AgentOutput
@@ -18,6 +20,7 @@ class agentic_loop:
         mcp_servers=None,
         invoke_tool_agent_fn: Callable | None = None,
         max_iterations: int = 20,
+        episodic_memory: EpisodicMemory | None = None,
     ) -> None:
         if max_iterations < 1:
             raise ValueError("max_iterations must be at least 1")
@@ -26,6 +29,9 @@ class agentic_loop:
         self.max_iterations = max_iterations
         self.runtime = RuntimeStateManager()
         self.chat_history = ChatHistoryManager()
+        self.episodic_memory = (
+            episodic_memory if episodic_memory is not None else configure_episodic_memory()
+        )
 
     def run(self, user: str) -> AgentLoopResult:
         if not isinstance(user, str) or not user.strip():
@@ -35,6 +41,7 @@ class agentic_loop:
 
         self.runtime.create(user_request=user.strip(), steps=[])
         self.chat_history.add_message("user", user.strip())
+        relevant_context = self._retrieve_memory_context(user.strip())
         tool_results = []
         resource_results = []
 
@@ -49,6 +56,7 @@ class agentic_loop:
                         "resource_catalog_error": resource_catalog_error,
                         "runtime": self.runtime.agent_context(),
                         "chat_history": self.chat_history.context(),
+                        "relevant_context": relevant_context,
                         "tool_results": list(tool_results),
                         "resource_results": list(resource_results),
                     }
@@ -117,6 +125,37 @@ class agentic_loop:
             )
         except Exception as exc:
             return self._failure(f"Agent loop failed: {exc}")
+
+    def end_session(self) -> EpisodicConsolidationResult | None:
+        """Consolidate the conversation once, when the interactive session ends."""
+        if self.episodic_memory is None:
+            return None
+        messages = self.chat_history.snapshot()["messages"]
+        chat_history = [
+            {"role": message["role"], "content": message["content"]}
+            for message in messages
+            if isinstance(message.get("content"), str)
+        ]
+        try:
+            return self.episodic_memory.create(chat_history)
+        except Exception as exc:
+            return EpisodicConsolidationResult(
+                error=f"Session memory consolidation failed: {str(exc)[:1000]}"
+            )
+
+    def _retrieve_memory_context(self, query: str) -> dict[str, Any]:
+        if self.episodic_memory is None:
+            return {"context": "", "memories": [], "error": None}
+        try:
+            result = self.episodic_memory.retrieve_context(query)
+            return {
+                "context": result.context,
+                "memories": result.memories,
+                "error": result.error,
+            }
+        except Exception as exc:
+            # Memory is optional context and must not prevent a user request from running.
+            return {"context": "", "memories": [], "error": str(exc)[:1000]}
 
     def _failure(self, error: str) -> AgentLoopResult:
         return AgentLoopResult(

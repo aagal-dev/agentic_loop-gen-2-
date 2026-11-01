@@ -1,0 +1,34 @@
+[
+  {
+    "id": "36e8f9ba-0f88-4a5e-96a5-d287c76ccbba",
+    "timestamp": "2026-11-01T05:28:07.808980Z",
+    "action": "create",
+    "target_id": null,
+    "episode": {
+      "type": "preference",
+      "summary": "User stated interests and dreams include AI engineering, engineering, cosmos, math, and physics, describing a Tony Stark-like builder/innovator vibe.",
+      "state": "User identifies with building- and innovation-oriented interests across AI, engineering, space, math, and physics.",
+      "change": "User disclosed personal interests and aspirations.",
+      "outcome": null,
+      "learned_lesson": null,
+      "importance": 0.8,
+      "confidence": 1.0,
+      "tags": [
+        "interests",
+        "aspirations",
+        "AI",
+        "engineering",
+        "cosmos",
+        "math",
+        "physics"
+      ],
+      "related": [],
+      "event_time": null,
+      "evidence": [
+        "user: my interests, and my dreams are AI engnieering, emgnieering, cosmos, math, physics like that tony stark vibes."
+      ],
+      "action": "create",
+      "target_id": null
+    }
+  }
+]
