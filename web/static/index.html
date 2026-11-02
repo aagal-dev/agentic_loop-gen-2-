@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="description" content="A lightweight chat console for testing your agentic loop.">
+  <title>Loop Studio · Agentic Loop</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M16 4.5 26 10.25v11.5L16 27.5 6 21.75v-11.5L16 4.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M10.2 16h11.6M16 10.2v11.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="16" r="3.1" fill="currentColor"/></svg>
+        </div>
+        <div class="brand-copy"><span>LOOP</span><small>STUDIO</small></div>
+        <button class="icon-button sidebar-close" id="sidebarClose" aria-label="Close sidebar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+
+      <button class="new-chat-button" id="newChatButton">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <span>New test session</span>
+        <kbd>⌘ K</kbd>
+      </button>
+
+      <div class="sidebar-section-label">TESTING SHORTCUTS</div>
+      <div class="shortcut-list">
+        <button class="shortcut" data-prompt="Remember that the project codename is Atlas. What is the codename?">
+          <span class="shortcut-icon violet">✳</span><span>Context retention</span>
+        </button>
+        <button class="shortcut" data-prompt="Break this goal into a clear sequence of steps, then explain the approach: review a JSON API response for errors.">
+          <span class="shortcut-icon blue">⌘</span><span>Multi-step task</span>
+        </button>
+        <button class="shortcut" data-prompt="Answer in exactly one sentence: what information do you currently have about this conversation?">
+          <span class="shortcut-icon green">◈</span><span>Context awareness</span>
+        </button>
+        <button class="shortcut" data-prompt="Inspect the tools and resources available to you. Briefly report what you can use, without calling any tool.">
+          <span class="shortcut-icon amber">⌁</span><span>Capability check</span>
+        </button>
+      </div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">WORKSPACE</div>
+      <div class="workspace-card">
+        <div class="workspace-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"/><path d="m4.5 7.8 7.5 4.4 7.5-4.4M12 12.2v8.1"/></svg></div>
+        <div class="workspace-copy"><strong>Agentic Loop Gen 2</strong><span>Local project runtime</span></div>
+        <span class="workspace-dot" aria-hidden="true"></span>
+      </div>
+
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <div class="footer-status"><span class="pulse-dot"></span><span id="sidebarStatus">Connecting to local API</span></div>
+        <div class="footer-version">WEB CONSOLE <span>V1.0</span></div>
+      </div>
+    </aside>
+
+    <div class="mobile-backdrop" id="mobileBackdrop"></div>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-button menu-button" id="menuButton" aria-label="Open sidebar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="breadcrumb"><span>Playground</span><span class="breadcrumb-slash">/</span><strong>Chat</strong></div>
+        </div>
+        <div class="topbar-right">
+          <div class="model-chip"><span class="model-spark">✳</span><span id="modelName">Loading model</span><span class="chip-caret">⌄</span></div>
+          <button class="run-details-button" id="detailsButton" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v13H4zM8 9h8M8 12h8M8 15h4"/></svg>
+            <span>Run details</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="chat-viewport" id="chatViewport">
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-orbit" aria-hidden="true">
+            <div class="orbit-ring ring-one"></div><div class="orbit-ring ring-two"></div>
+            <div class="orbit-core"><svg viewBox="0 0 48 48" fill="none"><path d="M24 5.5 40 14.75v18.5L24 42.5 8 33.25v-18.5L24 5.5Z" stroke="currentColor" stroke-width="1.5"/><path d="M14.5 24h19M24 14.5v19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="24" cy="24" r="4" fill="currentColor"/></svg></div>
+            <span class="orbit-dot dot-a"></span><span class="orbit-dot dot-b"></span><span class="orbit-dot dot-c"></span>
+          </div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> AGENT TEST ENVIRONMENT <span class="eyebrow-line"></span></div>
+          <h1>Let's put your agent<br><span>through its paces.</span></h1>
+          <p class="welcome-description">A focused space to test conversations, context handling, tool use, and the overall behavior of your agentic loop.</p>
+          <div class="suggestion-grid">
+            <button class="suggestion-card" data-prompt="Remember that the project codename is Atlas. What is the codename?">
+              <span class="suggestion-icon violet">✳</span><span class="suggestion-title">Test memory</span><span class="suggestion-subtitle">Check context across turns</span><span class="suggestion-arrow">↗</span>
+            </button>
+            <button class="suggestion-card" data-prompt="Break this goal into a clear sequence of steps, then explain the approach: review a JSON API response for errors.">
+              <span class="suggestion-icon blue">⌘</span><span class="suggestion-title">Test planning</span><span class="suggestion-subtitle">Evaluate multi-step handling</span><span class="suggestion-arrow">↗</span>
+            </button>
+            <button class="suggestion-card" data-prompt="Inspect the tools and resources available to you. Briefly report what you can use, without calling any tool.">
+              <span class="suggestion-icon amber">⌁</span><span class="suggestion-title">Test capabilities</span><span class="suggestion-subtitle">Inspect the available toolset</span><span class="suggestion-arrow">↗</span>
+            </button>
+            <button class="suggestion-card" data-prompt="Answer in exactly one sentence: what information do you currently have about this conversation?">
+              <span class="suggestion-icon green">◈</span><span class="suggestion-title">Test context</span><span class="suggestion-subtitle">Check instruction consistency</span><span class="suggestion-arrow">↗</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="message-list hidden" id="messageList" aria-live="polite"></div>
+      </section>
+
+      <section class="composer-area">
+        <div class="composer-wrap">
+          <form class="composer" id="composerForm">
+            <textarea id="promptInput" rows="1" placeholder="Message your agent..." maxlength="12000" aria-label="Message your agent"></textarea>
+            <div class="composer-bottom">
+              <div class="composer-hints"><span class="input-hint-icon">↵</span><span>Enter to send</span><span class="hint-separator">·</span><span>Shift + Enter for a new line</span></div>
+              <div class="composer-actions">
+                <span class="char-count" id="charCount">0 / 12,000</span>
+                <button class="send-button" id="sendButton" type="submit" aria-label="Send message" disabled>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 19 5l-4.5 14-2.4-5.1L5 12Z"/><path d="m12.1 13.9 3.2-3.2"/></svg>
+                </button>
+              </div>
+            </div>
+          </form>
+          <div class="composer-footnote"><span class="footnote-lock">◇</span> Your prompts run against your configured local agent environment.</div>
+        </div>
+      </section>
+
+      <aside class="inspector hidden" id="inspector" aria-label="Last run details">
+        <div class="inspector-header"><div><span class="inspector-kicker">INSPECTOR</span><h2>Last run</h2></div><button class="icon-button" id="closeInspector" aria-label="Close run details"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+        <div class="inspector-meta" id="inspectorMeta">No runs yet</div>
+        <pre class="inspector-json" id="inspectorJson">Send a message to inspect its structured result.</pre>
+      </aside>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

@@ -35,7 +35,7 @@ def test_ollama_client_validates_structured_response():
 
     class FakeOllama:
         def chat(self, **kwargs):
-            assert kwargs["messages"][1]["content"] == "{'question': 'life'}"
+            assert kwargs["messages"][1]["content"] == '{"question":"life"}'
             return {"message": {"content": '{"answer": 42}'} }
 
     client = OllamaClient.__new__(OllamaClient)
@@ -84,7 +84,7 @@ def test_ollama_client_retries_non_json_prose_then_accepts_valid_json():
             self.calls += 1
             if self.calls == 1:
                 return {"message": {"content": "Based on my web searches, here is the answer."}}
-            assert "required JSON schema" in kwargs["messages"][-1]["content"]
+            assert "required JSON response schema" in kwargs["messages"][-1]["content"]
             assert kwargs["format"] == AgentOutput.model_json_schema()
             return {
                 "message": {
@@ -104,6 +104,40 @@ def test_ollama_client_retries_non_json_prose_then_accepts_valid_json():
     assert response.success
     assert ollama_client.calls == 2
     assert response.data.response == "Here is the answer."
+
+
+def test_ollama_client_falls_back_to_json_mode_after_empty_schema_response():
+    class FakeOllama:
+        calls = 0
+
+        def chat(self, **kwargs):
+            self.calls += 1
+            if self.calls == 1:
+                assert kwargs["format"] == AgentOutput.model_json_schema()
+                return {
+                    "message": {"content": ""},
+                    "done_reason": "stop",
+                }
+
+            assert kwargs["format"] == "json"
+            return {
+                "message": {
+                    "content": '{"type":"respond","response":"Recovered."}'
+                }
+            }
+
+    ollama_client = FakeOllama()
+    client = OllamaClient.__new__(OllamaClient)
+    client.model = "test-model"
+    client.max_token_output = 100
+    client.temperature = 0
+    client.client = ollama_client
+
+    response = client.generate({"query": "research"}, AgentOutput, "Use JSON.")
+
+    assert response.success
+    assert response.data.response == "Recovered."
+    assert ollama_client.calls == 2
 
 
 def test_persistent_prose_becomes_agent_error_instead_of_validation_exception():
