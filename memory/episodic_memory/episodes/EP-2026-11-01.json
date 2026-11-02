@@ -30,5 +30,36 @@
       "action": "create",
       "target_id": null
     }
+  },
+  {
+    "id": "2bcf43d0-7ae5-45ca-b3fb-b1bf8721b1e3",
+    "timestamp": "2026-11-01T15:07:40.964164Z",
+    "action": "create",
+    "target_id": null,
+    "episode": {
+      "type": "project",
+      "summary": "User integrated hybrid_retrieval as a callable tool into a new agentic system. A test query for \"agentic system hybrid retrieval integration\" succeeded and returned one memory (user interests) with score 0.5 via hybrid source, indicating the retrieval pipeline is live.",
+      "state": "The agentic system has hybrid_retrieval available as a callable tool, and a test query returned a structured episodic record.",
+      "change": "Integrated hybrid_retrieval as a callable tool and validated it with a test query.",
+      "outcome": "Test succeeded with no errors; returned one memory (user interests) with score 0.5; pipeline reported live.",
+      "learned_lesson": null,
+      "importance": 0.8,
+      "confidence": 0.9,
+      "tags": [
+        "agentic system",
+        "hybrid retrieval",
+        "integration",
+        "testing",
+        "episodic memory"
+      ],
+      "related": [],
+      "event_time": null,
+      "evidence": [
+        "user: its night!! i am working on a new agentic system and now i integrated hybrid_retrieval as a callable tool.",
+        "assistant: It worked! ... Query: \"agentic system hybrid retrieval integration\" ... Status: Success ... Results returned: 1 memory ... Score: 0.5 (hybrid source) ... Memory retrieved: Your stated interests ..."
+      ],
+      "action": "create",
+      "target_id": null
+    }
   }
 ]
